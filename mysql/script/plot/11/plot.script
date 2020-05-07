@@ -107,13 +107,13 @@ tps_mysql = "\
 
 
 size_mysql = "\
-        set yrange [0:6];\
+        set yrange [0:20];\
         set ylabel 'size(GB)';\
         set ylabel font ',17';\
         set ylabel offset 2.6,0.0;\
         set ytics font ',17';\
         unset format y;\
-        set ytics (0.0, 1.5, 3.0, 4.5);\
+        set ytics (0.0, 5.0, 10.0, 15.0);\
         "
 
 chain_mysql = "\
