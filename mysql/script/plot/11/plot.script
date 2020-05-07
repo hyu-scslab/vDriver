@@ -1,0 +1,230 @@
+reset
+##########################################################
+# Gnuplot script file for plotting data in file
+##################### terminal settings ##################
+set size 1.0,1.0
+
+set datafile separator ","
+
+##################### plot ###############################
+
+set terminal postscript eps 20 color size 7.0,3.4
+#set terminal dumb size 200, 100
+set termoption enhanced
+set encoding utf8
+
+set autoscale xy
+set autoscale y2
+
+
+infile_mysql_vanilla_tps = 'temp.mysql_vanilla_tps.data'
+infile_mysql_vanilla_size = 'temp.mysql_vanilla_size.data'
+infile_mysql_vanilla_chain = 'temp.mysql_vanilla_chain.data'
+infile_mysql_vanilla_llt = 'temp.mysql_vanilla_llt.data'
+infile_mysql_vdriver_tps = 'temp.mysql_vdriver_tps.data'
+infile_mysql_vdriver_size = 'temp.mysql_vdriver_size.data'
+infile_mysql_vdriver_chain = 'temp.mysql_vdriver_chain.data'
+infile_mysql_vdriver_llt = 'temp.mysql_vdriver_llt.data'
+
+
+outfile = 'Figure_11_throughput_and_version_space.eps'
+set output outfile
+
+
+set style line 1 linetype 1 linewidth 2 linecolor rgb 'black'
+set style line 2 dashtype 2 linewidth 2 pointtype 1 pointsize 0 linecolor rgb 'black'
+set style line 3 dashtype (1,1) linewidth 6 pointtype 1 pointsize 0 linecolor rgb 'red'
+set style line 4 dashtype 1 linewidth 3 pointtype 1 pointsize 0 linecolor rgb 'blue'
+
+set style line 5 dashtype 3 linewidth 5 pointtype 1 pointsize 0 linecolor rgb 'black'
+set style line 6 dashtype 1 linewidth 4 pointtype 1 pointsize 0 linecolor rgb 'black'
+
+set style arrow 1 heads size screen 0.003,90 linestyle 1
+set style arrow 2 head filled linestyle 1
+
+
+
+set multiplot layout 4,2
+
+set origin 0.0,0.90
+set size 1.0,0.1
+set lmargin at screen 0.05;
+set rmargin at screen 0.95;
+
+set key reverse Left
+set key out horiz
+set key center top
+
+set border 0
+unset tics
+unset xlabel
+unset ylabel
+unset y2label
+
+set yrange [0:1]
+set y2range [0:1]
+
+plot \
+		 "+" using (1):(0) with linespoints linestyle 3 title 'w/o vDriver',\
+		 "+" using (1):(0) with linespoints axis x1y2 linestyle 4 title 'w/ vDriver',\
+		 "+" using (1):(0):(0):(0) with vectors arrowstyle 1 notitle,\
+		 "+" using (1):(0):(0):(0) with vectors arrowstyle 2 title 'long-lived transactions'
+#		 "+" using (1):(0) with linespoints axis x1y2 linestyle 4 title 'database size without redo log',\
+
+
+
+set multiplot next
+
+
+unset key
+set border
+
+
+set macros
+
+UNSET_X = "\
+       unset xlabel;\
+       unset xtics;\
+       "
+SET_X = "\
+        set xlabel 'Time (seconds)';\
+        set xlabel font ',17';\
+        set xlabel offset 0.0,0.3;\
+        set xtics font ',17' nomirror;\
+        set xtics 100;\
+        "
+
+
+tps_mysql = "\
+        set yrange [0:30];\
+        set ylabel 'tps(X10K)';\
+        set ylabel font ',17';\
+        set ylabel offset 1.6,0.0;\
+        set ytics font ',17' nomirror;\
+        unset format y;\
+        set ytics 6\
+        "
+
+
+size_mysql = "\
+        set yrange [0:6];\
+        set ylabel 'size(GB)';\
+        set ylabel font ',17';\
+        set ylabel offset 2.6,0.0;\
+        set ytics font ',17';\
+        unset format y;\
+        set ytics (0.0, 1.5, 3.0, 4.5);\
+        "
+
+chain_mysql = "\
+        set yrange [0:6];\
+        set ylabel 'length';\
+        set ylabel font ',17';\
+        set ylabel offset 0.6,0.0;\
+        set ytics font ',17';\
+        set format y '10^%.0s';\
+        set ytics (0, 2, 4);\
+        "
+
+
+SET_BAR = "\
+          set arrow 4 from 300, graph -2.05 to 300, graph 1.13 fill heads size screen 0.0001,0 linestyle 5;\
+          set label 2 at 300, graph 1.10 center offset -7,0 font ',18';\
+          set label 3 at 300, graph 1.10 center offset  7,0 font ',18';\
+          set arrow 5 from 293, graph 1.09 to 273, graph 1.09 filled head size screen 0.03,4 linestyle 6;\
+          set arrow 6 from 307, graph 1.09 to 327, graph 1.09 filled head size screen 0.03,4 linestyle 6;\
+            "
+UNSET_BAR = "\
+          unset arrow 4;\
+          unset label 2;\
+          unset label 3;\
+          unset arrow 5;\
+          unset arrow 6;\
+            "
+
+
+set label 1 at graph 0.02, graph 0.88 font ",20"
+set label 4 at 300, graph -0.50 center offset 0,0 font ',25'
+
+set xrange [0:600]
+
+set size 1.00,1.00
+
+
+
+
+
+set lmargin at screen 0.08;
+set rmargin at screen 0.95;
+set bmargin at screen 0.63;
+set tmargin at screen 0.88;
+set label 1 "transaction throughput"
+set label 2 "uniform"
+set label 3 "skewed"
+set label 4 ""
+@UNSET_X
+@tps_mysql
+@SET_BAR
+# throughput
+plot \
+		 infile_mysql_vanilla_tps using 1:($2/1000/10) with linespoints linestyle 3 notitle,\
+		 infile_mysql_vdriver_tps using 1:($2/1000/10) with linespoints linestyle 4 notitle,\
+		 infile_mysql_vanilla_llt using 1:(0.2):($2-$1):(0) axis x1y2 with vectors arrowstyle 1 notitle,\
+		 infile_mysql_vanilla_llt using 1:(0.2):($2-$1):(0) axis x1y2 with vectors arrowstyle 2 notitle #long-lived transaction
+
+                                                            
+
+
+set lmargin at screen 0.08;
+set rmargin at screen 0.95;
+set bmargin at screen 0.38;
+set tmargin at screen 0.63;
+set label 1 "database size except redo log"
+set label 2 ""
+set label 3 ""
+set label 4 ""
+@UNSET_X
+@size_mysql
+@UNSET_BAR
+# size
+plot \
+		 infile_mysql_vanilla_size using 1:($2/1000/1000/1000) with linespoints linestyle 3 notitle,\
+		 infile_mysql_vdriver_size using 1:($2/1000/1000/1000) with linespoints linestyle 4 notitle,\
+		 infile_mysql_vanilla_llt using 1:(0.2):($2-$1):(0) axis x1y2 with vectors arrowstyle 1 notitle,\
+		 infile_mysql_vanilla_llt using 1:(0.2):($2-$1):(0) axis x1y2 with vectors arrowstyle 2 notitle #long-lived transaction
+
+
+set lmargin at screen 0.08;
+set rmargin at screen 0.95;
+set bmargin at screen 0.13;
+set tmargin at screen 0.38;
+set label 1 "max version chain length"
+set label 2 ""
+set label 3 ""
+set label 4 ""
+@SET_X
+@chain_mysql
+@UNSET_BAR
+# chain length
+plot \
+		 infile_mysql_vanilla_chain using 1:($2) with linespoints linestyle 3 notitle,\
+		 infile_mysql_vdriver_chain using 1:($2) with linespoints linestyle 4 notitle,\
+		 infile_mysql_vanilla_llt using 1:(0.2):($2-$1):(0) axis x1y2 with vectors arrowstyle 1 notitle,\
+		 infile_mysql_vanilla_llt using 1:(0.2):($2-$1):(0) axis x1y2 with vectors arrowstyle 2 notitle #long-lived transaction
+
+
+
+
+
+
+unset multiplot
+
+
+
+
+
+
+
+
+
+

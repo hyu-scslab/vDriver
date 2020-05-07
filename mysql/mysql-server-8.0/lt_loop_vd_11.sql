@@ -1,0 +1,30 @@
+USE sbtest;
+DROP PROCEDURE IF EXISTS LT_VD;
+
+DELIMITER $$
+
+CREATE PROCEDURE LT_VD(IN n INT)
+BEGIN
+	DECLARE y INT;
+	DECLARE x INT;
+	DECLARE time INT;
+	DECLARE rand INT;
+	SET time = UNIX_TIMESTAMP(NOW());
+
+	label1: LOOP
+		SET @sql = CONCAT("SELECT * FROM sbtest",n, " WHERE id=1");
+		SELECT @sql;
+		PREPARE stmt FROM @sql;
+		EXECUTE stmt;
+		DEALLOCATE PREPARE stmt;
+		SELECT sleep(0.5);
+		SET y = UNIX_TIMESTAMP(NOW());
+		IF y-time < 600 THEN
+			ITERATE label1;
+		END IF;
+		LEAVE label1;
+	END LOOP label1;
+END$$
+
+DELIMITER ;
+

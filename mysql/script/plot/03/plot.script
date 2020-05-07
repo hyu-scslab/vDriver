@@ -1,0 +1,225 @@
+reset
+##########################################################
+# Gnuplot script file for plotting data in file
+##################### terminal settings ##################
+#set ratio 0.5
+#set size 0.9,1.1
+set size 1.0,1.0
+
+##################### title #############################
+#set title "Varmail"
+#set title font ", 20"
+#set title offset 1, 0.1
+
+##################### axis labels #######################
+#set xlabel "time (seconds)"
+#set xlabel font ", 20"
+#
+#set ylabel "transaction id"
+#set ylabel font ", 20"
+
+set lmargin at screen 0.20
+set rmargin at screen 0.80
+
+set datafile separator " "
+##################### axis tics ########################
+#set xtics norotate nomirror
+
+#set ytics 100000
+#set logscale y
+
+#set xdata time
+#set timefmt "%Y-%m-%d %H:%M:%S"
+#set format x "%H:%M:%S"
+#set format x "%l"
+#set format y "%l"
+
+##################### legend #############################
+set key font ",20"
+set key inside
+set key reverse Left top left
+#set key autotitle columnhead width 1
+
+#set style data histogram
+#set style histogram cluster gap 1.0
+#set style fill pattern border -1
+
+#set grid ytics lw 1 lt 0
+
+##################### plot ###############################
+
+set terminal postscript eps 20 color
+
+#plot "xmin_xmax.data" using 2:($1 <= 42500 ? $3 : 1/0) 
+#set xrange [GPVAL_X_MIN+64000:GPVAL_X_MIN+70000]
+#set yrange [GPVAL_X_MIN+64000:GPVAL_X_MIN+70000]
+
+#stats "temp.vacuum_xmin_xmax.data" using 1:3 
+#set xrange [STATS_min_x:STATS_max_x]
+#set yrange [STATS_min_y:STATS_max_y]
+#set xrange ["2019-08-05 15:13:38.668000":"2019-08-05 15:14:08.417000"]
+set autoscale xy
+set autoscale y2
+
+
+#do for [t=3600:3800] {
+#	outfile = sprintf('result_1/plot_%03d.eps', t)
+#	set output outfile
+#	plot "plot.data" using 2:($1*10 <= t && $1*10 > t-1? $3 : 1/0) with point pointtype 7 pointsize 0.3 t "tuple"
+#}
+
+#do for [t=3561:3570] {
+#	outfile = sprintf('result_1/plot_%04d.eps', t)
+#	set output outfile
+#	plot "plot.data" using 2:($1*100 >= t && $1*100 < t+1 ? $3 : 1/0) with point pointtype 7 pointsize 0.6 t "tuple"
+#}
+
+infile_lt_id = 'lt_id.data'
+infile_throughput = 'throughput.data'
+infile_trx_id = 'tid.data'
+
+outfile = 'plot.eps'
+
+set output outfile
+
+
+
+set multiplot layout 2,1
+
+
+
+
+set style line 1 linetype 1 linewidth 2 linecolor rgb 'black'
+set style line 2 dashtype 2 linewidth 2 pointtype 1 pointsize 0 linecolor rgb 'black'
+set style line 3 dashtype 1 linewidth 2 pointtype 1 pointsize 0 linecolor rgb 'red'
+
+set style arrow 1 heads size screen 0.008,90 linestyle 1
+set style arrow 2 head filled linestyle 1
+
+
+
+
+#set xlabel "Time (seconds)"
+#set xlabel font ", 20"
+unset xlabel
+set xtics font ",20" format ""
+
+set ytics font ",20" nomirror
+#unset ytics
+set y2tics font ",20"
+set ylabel "Xid(M)" offset 0.56,0,0
+set ylabel font ", 20"
+set y2label "tps(K)" offset -2.2,0,0
+set y2label font ", 20"
+
+
+set xrange [0:95]
+set y2range [0:600]
+
+
+set tmargin at screen 0.85
+set bmargin at screen 0.5
+
+#set key title "foreground(running transaction)" font ",30" reverse right
+#plot \
+#		infile_long_X using 1:($3/1000):($2-$1):(0) with vectors arrowstyle 1 notitle,\
+#		infile_long_X using 1:($3/1000):($2-$1):(0) with vectors arrowstyle 2 title 'long-lived transaction',\
+#		infile_short_X using 1:($2/1000) with linespoints linestyle 2 title 'recent xid',\
+#		infile_throughput using 1:($2/1000) with linespoints axis x1y2 linestyle 3 title 'throughput'
+#		infile_ondemand using 1:($3/1000) with point linecolor rgb 'blue' pointtype 7 pointsize 0.3 notitle,\
+#		NaN with point linecolor rgb 'blue' pointtype 7 pointsize 1 title 'Foreground(running trx)',\
+#		infile_vacuum using 1:($3/1000) with point linecolor rgb 'red' pointtype 7 pointsize 0.3 notitle,\
+#		NaN with point linecolor rgb 'red' pointtype 7 pointsize 1 title 'Background(vacuum)',\
+#		infile_lsn using 1:($2/1000/1000) with linespoints axis x1y2 linestyle 3 title 'Redo log LSN',\
+
+
+plot \
+		infile_lt_id using 1:($3/1000/1000):($2-$1):(0) with vectors arrowstyle 1 notitle,\
+		infile_lt_id using 1:($3/1000/1000):($2-$1):(0) with vectors arrowstyle 2 title 'long-lived transaction',\
+		infile_trx_id using 1:($2/1000/1000) with linespoints linestyle 2 title 'recent xid',\
+		infile_throughput using 1:($2/1000) with linespoints axis x1y2 linestyle 3 title 'throughput'
+
+#unset xlabel
+#
+#set origin 0.0, 1.5
+#set size 3.0, 1.5
+#set key title "backgound(vacuum)" font ",30" reverse right
+#plot infile_vacuum using 1:3 with point pointtype 7 pointsize 0.3 notitle,\
+#		infile_short_X using 1:3 with linespoints linestyle 2 notitle,\
+#		infile_long_X using 1:3:($2-$1):(0) with vectors arrowstyle 1 notitle,\
+#		infile_long_X using 1:3:($2-$1):(0) with vectors arrowstyle 2 notitle,\
+#		infile_lsn using 1:2 with linespoints linestyle 3 notitle
+#
+#
+#
+#
+#unset multiplot
+
+
+
+
+
+
+#############################################################################################################################
+
+
+
+
+
+infile_vmstat = 'vmstat.data'
+
+#outfile = 'result_1/motivation_plot.eps'
+#set output outfile
+
+
+
+
+
+#set origin 0.0, 0.0
+#set size 3.0, 1.5
+#plot infile_ondemand using 1:3 with point pointtype 7 pointsize 0.3 title "reclaimed",\
+#		 infile_X using 1:3:(timecolumn(2)-timecolumn(1)):(0) with vectors arrowstyle 1 title "transaction",\
+#		 infile_X using 1:3:(timecolumn(2)-timecolumn(1)):(0) with vectors arrowstyle 2 notitle
+
+unset xtics
+
+set autoscale x
+set xtics font ", 20" format "%g"
+
+set ytics (0,20,40,60,80,100)
+#unset ytics
+
+set xlabel "Time (seconds)"
+set xlabel font ", 20"
+set ylabel "CPU Utilization (%)" offset 1.5,0,0
+set ylabel font ", 20"
+
+
+set xrange [0:95]
+set yrange [0:120]
+
+unset y2label
+unset y2range
+unset y2tics
+
+#set lmargin at screen 0.20
+#set rmargin at screen 1.70
+
+set tmargin at screen 0.5
+set bmargin at screen 0.15
+
+#set key title "foreground(running transaction)" font ",30" reverse right
+plot \
+		infile_vmstat using 1:($3+$2) with filledcurve y1=0 lc rgb "gold" title "DB",\
+		infile_vmstat using 1:($3+$4) with filledcurve y1=0 lc rgb "blue" title "page latch contention", \
+		infile_vmstat using 1:3 with filledcurve y1=0 lc rgb "red" title "kernel"
+
+
+#		infile_scan_util using 1:($7+$6+$5+$4+$3+$2) with filledcurve y1=0 lc rgb "green" title "background vacuuming",\
+#		infile_scan_util using 1:($6+$5+$4+$3+$2) with filledcurve y1=0 lc rgb "purple" title "foreground vacuuming",\
+#		infile_scan_util using 1:($5+$4+$3+$2) with filledcurve y1=0 lc rgb "orange" title "visibility check",\
+
+
+
+
+unset multiplot

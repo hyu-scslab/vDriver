@@ -1,0 +1,30 @@
+-- source include/have_multi_ndb.inc
+-- source suite/ndb/include/backup_restore_setup.inc
+
+--exec $NDB_RESTORE -b 1 -n 1 -p 1 -m -r $NDB_SAVED_BACKUPS/51_dd >> $NDB_TOOLS_OUTPUT
+--exec $NDB_RESTORE -e -b 1 -n 2 -p 1 -r $NDB_SAVED_BACKUPS/51_dd >> $NDB_TOOLS_OUTPUT
+
+--disable_query_log
+call mtr.add_suppression("NDB: Table upgrade required");
+call mtr.add_suppression("NDB: Failed to create entry in DD for table");
+call mtr.add_suppression("NDB: Failed to install table");
+call mtr.add_suppression("NDB: Table definition contains obsolete data types");
+--enable_query_log
+
+# Restart mysqld to trigger schema synchronization
+let $mysqld_name=mysqld.1.1;
+--source include/restart_mysqld.inc
+
+--error ER_NO_SUCH_TABLE
+show create table t1;
+show warnings;
+
+--exec $NDB_DROP_TABLE --no-defaults -d test t1 >> $NDB_TOOLS_OUTPUT
+ALTER TABLESPACE ts
+DROP DATAFILE 'datafile.dat';
+
+drop tablespace ts;
+
+drop logfile group lg
+engine ndb;
+--remove_file $NDB_TOOLS_OUTPUT

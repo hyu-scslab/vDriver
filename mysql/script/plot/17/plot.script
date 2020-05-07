@@ -1,0 +1,136 @@
+reset
+##########################################################
+# Gnuplot script file for plotting data in file
+##################### terminal settings ##################
+set size 1.0,1.0
+
+set datafile separator ","
+
+##################### plot ###############################
+
+set terminal postscript eps 20 color size 5.0,2.3
+set termoption enhanced
+set encoding utf8
+
+set autoscale xy
+set autoscale y2
+
+
+#infile_postgresql_vdriver_16M_tps   = 'gnuplot_data_keep/temp.postgresql_VDRIVER_16M_tps.data'
+#infile_postgresql_vdriver_16M_chain = 'gnuplot_data_keep/temp.postgresql_VDRIVER_16M_chain.data'
+#infile_postgresql_vdriver_16M_llt   = 'gnuplot_data_keep/temp.postgresql_VDRIVER_16M_llt.data'
+#
+#infile_postgresql_vdriver_1M_tps    = 'gnuplot_data_keep/temp.postgresql_VDRIVER_1M_tps.data'
+#infile_postgresql_vdriver_1M_chain  = 'gnuplot_data_keep/temp.postgresql_VDRIVER_1M_chain.data'
+#infile_postgresql_vdriver_1M_llt    = 'gnuplot_data_keep/temp.postgresql_VDRIVER_1M_llt.data'
+#
+#infile_postgresql_vdriver_64K_tps   = 'gnuplot_data_keep/temp.postgresql_VDRIVER_64K_tps.data'
+#infile_postgresql_vdriver_64K_chain = 'gnuplot_data_keep/temp.postgresql_VDRIVER_64K_chain.data'
+#infile_postgresql_vdriver_64K_llt   = 'gnuplot_data_keep/temp.postgresql_VDRIVER_64K_llt.data'
+
+infile_vdriver_16M_chain = 'temp.mysql_vdriver_chain_16M.data'
+infile_vdriver_1M_chain  = 'temp.mysql_vdriver_chain_1M.data'
+infile_vdriver_64K_chain = 'temp.mysql_vdriver_chain_64K.data'
+infile_vdriver_llt = 'temp.mysql_vdriver_llt.data'
+
+outfile = 'segsize_chain.eps'
+set output outfile
+
+
+set style line 1 linetype 1 linewidth 2 linecolor rgb 'black'
+set style line 2 dashtype 2 linewidth 2 pointtype 1 pointsize 0 linecolor rgb 'black'
+#set style line 3 dashtype (1,1) linewidth 6 pointtype 1 pointsize 0 linecolor rgb 'red'
+set style line 3 dashtype 1 linewidth 2 pointtype 1 pointsize 0 linecolor rgb 'red'
+set style line 4 dashtype 1 linewidth 2 pointtype 1 pointsize 0 linecolor rgb 'blue'
+set style line 5 dashtype 1 linewidth 2 pointtype 1 pointsize 0 linecolor rgb 'dark-green'
+
+set style line 15 dashtype 3 linewidth 5 pointtype 1 pointsize 0 linecolor rgb 'black'
+set style line 16 dashtype 1 linewidth 4 pointtype 1 pointsize 0 linecolor rgb 'black'
+
+set style arrow 1 heads size screen 0.008,90 linestyle 1
+set style arrow 2 head filled linestyle 1
+
+
+set title "MySQL w/ vDriver" offset 0,-0.5
+
+
+
+
+
+
+set key reverse Left
+#set key out horiz
+#set key center top
+set key left top
+
+
+
+set xlabel 'Time (seconds)'
+set xlabel font ',20'
+set xlabel offset 0.0,0.3
+set xtics font ',20' nomirror
+set xtics 100;\
+
+
+#set yrange [0:18]
+#set ylabel 'tps(X10K)'
+#set ylabel font ',17'
+#set ylabel offset 1.6,0.0
+#set ytics font ',17' nomirror
+#set ytics 5
+#unset format y
+
+
+set yrange [0:4]
+set ylabel 'length'
+set ylabel font ',20'
+set ylabel offset -0.2,0.0
+set ytics font ',20'
+set ytics 1
+set format y '10^%.0s'
+
+
+set arrow 4 from 300, graph -0.03 to 300, graph 1.03 nohead linestyle 15
+set label 2 at 300, graph 0.93 center offset -6,0 font ',18'
+set label 3 at 300, graph 0.93 center offset  6,0 font ',18'
+set arrow 5 from 293, graph 0.93 to 273, graph 0.93 filled head size screen 0.03,4 linestyle 16
+set arrow 6 from 307, graph 0.93 to 327, graph 0.93 filled head size screen 0.03,4 linestyle 16
+
+
+
+
+set label 1 at graph 0.5, graph 1.18 font ",20"
+
+set xrange [0:600]
+
+
+#set label 1 "MySQL w/ vDriver"
+set label 2 "uniform"
+set label 3 "skewed"
+
+plot \
+		 infile_vdriver_16M_chain using 1:($2) with linespoints linestyle 5 title '16 MiB',\
+		 infile_vdriver_1M_chain  using 1:($2) with linespoints linestyle 4 title '  1 MiB',\
+		 infile_vdriver_64K_chain using 1:($2) with linespoints linestyle 3 title '64 KiB',\
+		 infile_vdriver_llt using 1:(1):($2-$1):(0) with vectors arrowstyle 1 notitle,\
+		 infile_vdriver_llt using 1:(1):($2-$1):(0) with vectors arrowstyle 2 title 'long-lived transaction'
+
+
+
+#set lmargin at screen 0.05;
+#set rmargin at screen 0.46;
+#set bmargin at screen 0.63;
+#set tmargin at screen 0.88;
+
+#set label 1 "transaction throughput"
+#infile_postgresql_vdriver_64K_chain using 1:($2/1000/10) with linespoints linestyle 3 notitle,\
+#plot \
+#		 infile_postgresql_vdriver_64K_chain using 1:($2) axis x1y2 with linespoints linestyle 3 notitle,\
+#		 infile_postgresql_vdriver_1M_chain  using 1:($2) axis x1y2 with linespoints linestyle 4 notitle,\
+#		 infile_postgresql_vdriver_16M_chain using 1:($2) axis x1y2 with linespoints linestyle 5 notitle,\
+#		 infile_postgresql_vdriver_16M_llt using 1:(4):($2-$1):(0) with vectors arrowstyle 1 notitle,\
+#		 infile_postgresql_vdriver_16M_llt using 1:(4):($2-$1):(0) with vectors arrowstyle 2 notitle #long-lived transaction
+
+                                                            
+
+

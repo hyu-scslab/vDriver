@@ -1,0 +1,4 @@
+USE sbtest;
+START TRANSACTION;
+CALL m();
+COMMIT;

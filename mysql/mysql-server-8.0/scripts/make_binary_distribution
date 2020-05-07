@@ -1,0 +1,1 @@
+cd /opt/sm1725-1/jaeseon/mysql/mysql-server-8.0 && '/usr/bin/cpack' -G TGZ --config CPackConfig.cmake

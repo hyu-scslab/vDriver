@@ -1,0 +1,263 @@
+reset
+##########################################################
+# Gnuplot script file for plotting data in file
+##################### terminal settings ##################
+#set ratio 0.5
+set size 1.1,0.65
+#set size 3.0,3.0
+
+##################### title #############################
+#set title "Varmail"
+#set title font ", 20"
+#set title offset 1, 0.1
+
+##################### axis labels #######################
+#set xlabel "time (seconds)"
+#set xlabel font ", 20"
+#
+#set ylabel "transaction id"
+#set ylabel font ", 20"
+
+#set lmargin at screen 0.15
+#set rmargin at screen 0.85
+
+set datafile separator ","
+##################### axis tics ########################
+#set xtics norotate nomirror
+
+#set ytics 100000
+#set logscale y
+
+#set xdata time
+#set timefmt "%Y-%m-%d %H:%M:%S"
+#set format x "%H:%M:%S"
+#set format x "%l"
+#set format y "%l"
+
+##################### legend #############################
+#set key reverse Left top left
+#set key autotitle columnhead width 1
+
+#set style data histogram
+#set style histogram cluster gap 1.0
+#set style fill pattern border -1
+
+#set grid ytics lw 1 lt 0
+
+##################### plot ###############################
+
+set terminal postscript eps 20 color
+
+#plot "xmin_xmax.data" using 2:($1 <= 42500 ? $3 : 1/0) 
+#set xrange [GPVAL_X_MIN+64000:GPVAL_X_MIN+70000]
+#set yrange [GPVAL_X_MIN+64000:GPVAL_X_MIN+70000]
+
+#stats "temp.vacuum_xmin_xmax.data" using 1:3 
+#set xrange [STATS_min_x:STATS_max_x]
+#set yrange [STATS_min_y:STATS_max_y]
+#set xrange ["2019-08-05 15:13:38.668000":"2019-08-05 15:14:08.417000"]
+set autoscale xy
+set autoscale y2
+
+
+infile_prune_breakdown_llt_normal = 'llt_breakdown.data'
+infile_prune_breakdown_nollt_normal = 'no_llt_breakdown.data'
+
+
+
+outfile = 'prune_breakdown.eps'
+set output outfile
+
+set multiplot layout 2,2
+
+#set style data histogram
+#set style histogram rowstacked
+#set style fill solid border -1
+
+unset key
+set key invert reverse Left outside
+set key font ",20" width 0.6 spacing 1.3 height -0.9
+set size 1.1,0.1
+set key center top
+set key horiz
+set key at screen 0.57,0.58
+set key maxcols 3
+set key maxrows 3
+set border 0
+unset tics
+unset xlabel
+unset ylabel
+set yrange [0:1]
+plot \
+		2 with filledcurve lc rgb "greenyellow" title 'LLT 1^{st} prune',\
+		2 with filledcurve lc rgb "web-green" title 'LLT 2^{nd} prune',\
+		2 with filledcurve lc rgb "dark-green" title 'LLT no prune',\
+		2 with filledcurve lc rgb "cyan" title 'COLD 1^{st} prune',\
+		2 with filledcurve lc rgb "blue" title 'COLD 2^{nd} prune',\
+		2 with filledcurve lc rgb "dark-blue" title 'COLD no prune',\
+		2 with filledcurve lc rgb "tan1" title 'HOT 1^{st} prune',\
+		2 with filledcurve lc rgb "brown" title 'HOT 2^{nd} prune',\
+		2 with filledcurve lc rgb "dark-pink" title 'HOT no prune'
+
+
+
+set multiplot next
+set size 0.58,0.48
+set lmargin at screen 0.12
+set rmargin at screen 0.55
+unset key
+set yrange[70:100]
+
+set xtics font ",20"
+set xlabel "rand-zipfian-exp (w/o LLT)"
+set xlabel font ",20"
+
+set ytics font ",20"
+set ylabel "record(%)" offset 2.0,0
+set ylabel font ",20"
+set ytics 10
+
+
+plot \
+		infile_prune_breakdown_nollt_normal using ($10):xtic(1) with filledcurve y1=0 lc rgb "dark-green" title 'LLT no prune',\
+		infile_prune_breakdown_nollt_normal using ( $9):xtic(1) with filledcurve y1=0 lc rgb "web-green" title 'LLT 2^{nd} prune',\
+		infile_prune_breakdown_nollt_normal using ( $8):xtic(1) with filledcurve y1=0 lc rgb "greenyellow" title 'LLT 1^{st} prune',\
+		infile_prune_breakdown_nollt_normal using ( $7):xtic(1) with filledcurve y1=0 lc rgb "dark-blue" title 'COLD no prune',\
+		infile_prune_breakdown_nollt_normal using ( $6):xtic(1) with filledcurve y1=0 lc rgb "blue" title 'COLD 2^{nd} prune',\
+		infile_prune_breakdown_nollt_normal using ( $5):xtic(1) with filledcurve y1=0 lc rgb "cyan" title 'COLD 1^{st} prune',\
+		infile_prune_breakdown_nollt_normal using ( $4):xtic(1) with filledcurve y1=0 lc rgb "dark-pink" title 'HOT no prune',\
+		infile_prune_breakdown_nollt_normal using ( $3):xtic(1) with filledcurve y1=0 lc rgb "brown" title 'HOT 2^{nd} prune',\
+		infile_prune_breakdown_nollt_normal using ( $2):xtic(1) with filledcurve y1=0 lc rgb "tan1" title 'HOT 1^{st} prune'
+
+
+
+set size 0.63,0.48
+set lmargin at screen 0.60
+set rmargin 5.0
+
+unset key
+unset ylabel
+unset ytics
+
+set xtics font ",20"
+set xlabel "rand-zipfian-exp (w/ LLT)"
+set xlabel font ",20"
+
+plot \
+		infile_prune_breakdown_llt_normal using ($10):xtic(1) with filledcurve y1=0 lc rgb "dark-green" title 'LLT no prune',\
+		infile_prune_breakdown_llt_normal using ( $9):xtic(1) with filledcurve y1=0 lc rgb "web-green" title 'LLT 2_{nd} prune',\
+		infile_prune_breakdown_llt_normal using ( $8):xtic(1) with filledcurve y1=0 lc rgb "greenyellow" title 'LLT 1_{st} prune',\
+		infile_prune_breakdown_llt_normal using ( $7):xtic(1) with filledcurve y1=0 lc rgb "dark-blue" title 'COLD no prune',\
+		infile_prune_breakdown_llt_normal using ( $6):xtic(1) with filledcurve y1=0 lc rgb "blue" title 'COLD 2_{nd} prune',\
+		infile_prune_breakdown_llt_normal using ( $5):xtic(1) with filledcurve y1=0 lc rgb "cyan" title 'COLD 1_{st} prune',\
+		infile_prune_breakdown_llt_normal using ( $4):xtic(1) with filledcurve y1=0 lc rgb "dark-pink" title 'HOT no prune',\
+		infile_prune_breakdown_llt_normal using ( $3):xtic(1) with filledcurve y1=0 lc rgb "brown" title 'HOT 2_{nd} prune',\
+		infile_prune_breakdown_llt_normal using ( $2):xtic(1) with filledcurve y1=0 lc rgb "tan1" title 'HOT 1_{st} prune'
+
+
+
+
+unset multiplot
+
+
+
+
+
+
+
+#################################################################################
+
+
+
+
+#
+#outfile = 'prune_breakdown_count.eps'
+#set output outfile
+#
+#set multiplot layout 2,2
+#
+##set style data histogram
+##set style histogram rowstacked
+##set style fill solid border -1
+#
+#unset key
+#set key invert reverse Left outside
+#set key font ",20" width 0.6
+#set size 1.1,0.1
+#set key center top
+#set key horiz
+#set key at screen 0.53,0.7
+#set key maxcols 3
+#set key maxrows 3
+#set border 0
+#unset tics
+#unset xlabel
+#unset ylabel
+#set yrange [0:1]
+#plot \
+#		2 with filledcurve lc rgb "greenyellow" title 'LLT 1_{st} prune',\
+#		2 with filledcurve lc rgb "web-green" title 'LLT 2_{nd} prune',\
+#		2 with filledcurve lc rgb "dark-green" title 'LLT no prune',\
+#		2 with filledcurve lc rgb "cyan" title 'COLD 1_{st} prune',\
+#		2 with filledcurve lc rgb "blue" title 'COLD 2_{nd} prune',\
+#		2 with filledcurve lc rgb "dark-blue" title 'COLD no prune',\
+#		2 with filledcurve lc rgb "tan1" title 'HOT 1_{st} prune',\
+#		2 with filledcurve lc rgb "brown" title 'HOT 2_{nd} prune',\
+#		2 with filledcurve lc rgb "dark-pink" title 'HOT no prune'
+#
+#
+#
+#set multiplot next
+#set size 0.58,0.6
+#set lmargin at screen 0.12
+#set rmargin at screen 0.55
+#unset key
+#unset yrange
+#
+#set xtics font ",17"
+#set xlabel "rand-zipfian-exp"
+#set xlabel font ",17"
+#
+#set ytics font ",17"
+#set ylabel "record(M)" offset 2.0,0
+#set ylabel font ",17"
+#
+#
+#plot \
+#		infile_prune_breakdown_nollt using ($10/1000/1000):xtic(1) with filledcurve y1=0 lc rgb "dark-green" title 'LLT no prune',\
+#		infile_prune_breakdown_nollt using ( $9/1000/1000):xtic(1) with filledcurve y1=0 lc rgb "web-green" title 'LLT 2_{nd} prune',\
+#		infile_prune_breakdown_nollt using ( $8/1000/1000):xtic(1) with filledcurve y1=0 lc rgb "greenyellow" title 'LLT 1_{st} prune',\
+#		infile_prune_breakdown_nollt using ( $7/1000/1000):xtic(1) with filledcurve y1=0 lc rgb "dark-blue" title 'COLD no prune',\
+#		infile_prune_breakdown_nollt using ( $6/1000/1000):xtic(1) with filledcurve y1=0 lc rgb "blue" title 'COLD 2_{nd} prune',\
+#		infile_prune_breakdown_nollt using ( $5/1000/1000):xtic(1) with filledcurve y1=0 lc rgb "cyan" title 'COLD 1_{st} prune',\
+#		infile_prune_breakdown_nollt using ( $4/1000/1000):xtic(1) with filledcurve y1=0 lc rgb "dark-pink" title 'HOT no prune',\
+#		infile_prune_breakdown_nollt using ( $3/1000/1000):xtic(1) with filledcurve y1=0 lc rgb "brown" title 'HOT 2_{nd} prune',\
+#		infile_prune_breakdown_nollt using ( $2/1000/1000):xtic(1) with filledcurve y1=0 lc rgb "tan1" title 'HOT 1_{st} prune'
+#
+#
+#
+#set size 0.63,0.6
+#set lmargin at screen 0.60
+#set rmargin 5.0
+#
+#unset key
+#unset ylabel
+#unset ytics
+#
+#
+#
+#plot \
+#		infile_prune_breakdown_llt using ($10/1000/1000):xtic(1) with filledcurve y1=0 lc rgb "dark-green" title 'LLT no prune',\
+#		infile_prune_breakdown_llt using ( $9/1000/1000):xtic(1) with filledcurve y1=0 lc rgb "web-green" title 'LLT 2_{nd} prune',\
+#		infile_prune_breakdown_llt using ( $8/1000/1000):xtic(1) with filledcurve y1=0 lc rgb "greenyellow" title 'LLT 1_{st} prune',\
+#		infile_prune_breakdown_llt using ( $7/1000/1000):xtic(1) with filledcurve y1=0 lc rgb "dark-blue" title 'COLD no prune',\
+#		infile_prune_breakdown_llt using ( $6/1000/1000):xtic(1) with filledcurve y1=0 lc rgb "blue" title 'COLD 2_{nd} prune',\
+#		infile_prune_breakdown_llt using ( $5/1000/1000):xtic(1) with filledcurve y1=0 lc rgb "cyan" title 'COLD 1_{st} prune',\
+#		infile_prune_breakdown_llt using ( $4/1000/1000):xtic(1) with filledcurve y1=0 lc rgb "dark-pink" title 'HOT no prune',\
+#		infile_prune_breakdown_llt using ( $3/1000/1000):xtic(1) with filledcurve y1=0 lc rgb "brown" title 'HOT 2_{nd} prune',\
+#		infile_prune_breakdown_llt using ( $2/1000/1000):xtic(1) with filledcurve y1=0 lc rgb "tan1" title 'HOT 1_{st} prune'
+#
+#
+#
+#
+#unset multiplot
