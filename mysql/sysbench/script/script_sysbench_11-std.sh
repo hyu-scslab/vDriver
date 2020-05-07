@@ -11,7 +11,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd)"
 cd $DIR
 
 SYSBENCH="../sysbench/src/sysbench"
-SQL="--db_driver=mysql --mysql-host=localhost --mysql-user=root --mysql-socket=/opt/sm1725-1/jaeseon/mysql/mysql-server-8.0/run/mysql.sock --mysql-port=33060 --secondary=off --create-secondary=false"
+SQL="--db_driver=mysql --mysql-host=localhost --mysql-port=33060 --secondary=off --create-secondary=false"
 WORKLOAD="oltp_update_non_index.lua"
 
 TIME="--time=275"
@@ -23,10 +23,14 @@ RAND_TYPE="zipfian"
 RAND_EXP="0.0"
 RECORD_NUM="--table_size=1000"
 
+PATH="--mysql-socket="
+SOCKET="path_to_socket"
+PATH+=$SOCKET
+
 CONSOPT="--db-ps-mode=disable --range_selects=off"
 RANDOPT="--rand-type=zipfian --rand-zipfian-exp=${RAND_EXP}"
 
-TOTALOPT=$WORKLOAD" "$SQL" "$TIME" "$THREADS" "$TABLES" "$RECORD_NUM" "$RANDOPT" "$CONSOPT" "$REPORT
+TOTALOPT=$WORKLOAD" "$SQL" "$PATH" "$TIME" "$THREADS" "$TABLES" "$RECORD_NUM" "$RANDOPT" "$CONSOPT" "$REPORT
 
 if [ "prepare" = "$1" ]; then
 	$SYSBENCH $TOTALOPT $1

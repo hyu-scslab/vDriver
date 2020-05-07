@@ -14,6 +14,7 @@ mysql_path="../mysql-server-8.0/"
 
 # sysbench script path
 sysbench_path="../sysbench/script/"
+sysbench_socket="../../mysql-server-8.0/run/mysql.sock"
 
 # plot path
 plot_path = "./plot/"
@@ -286,10 +287,16 @@ def post_compile():
 
 def sysbench_compile_3(cond=None, zipf=None):
 	os.system("cp " + sysbench_script_3[0] + ' ' + sysbench_script_3[1])
+	pattern = r"SOCKET=\s*" + r'.*'
+	replacement = "SOCKET=\"" + sysbench_socket + "\""
+	replace(sysbench_script_3[1], pattern, replacement)
 	print("Success to set sysbench parameters")
 
 def sysbench_compile_11(cond=None, zipf=None):
 	os.system("cp " + sysbench_script_11[0] + ' ' + sysbench_script_11[1])
+	pattern = r"SOCKET=\s*" + r'.*'
+	replacement = "SOCKET=\"" + sysbench_socket + "\""
+	replace(sysbench_script_11[1], pattern, replacement)
 	if cond == "zipfian":
 		pattern = r"RAND_EXP=\s*" + r'.*'
 		replacement = "RAND_EXP=\""+str(zipf)+"\""
@@ -298,7 +305,9 @@ def sysbench_compile_11(cond=None, zipf=None):
 
 def sysbench_compile_13(zipf=None):
 	os.system("cp " + sysbench_script_13[0] + ' ' + sysbench_script_13[1])
-	
+	pattern = r"SOCKET=\s*" + r'.*'
+	replacement = "SOCKET=\"" + sysbench_socket + "\""
+	replace(sysbench_script_13[1], pattern, replacement)
 	pattern = r"RAND_EXP=\s*" + r'.*'
 	replacement = "RAND_EXP=\""+str(zipf)+"\""
 	replace(sysbench_script_13[1], pattern, replacement)
@@ -307,7 +316,9 @@ def sysbench_compile_13(zipf=None):
 
 def sysbench_compile_15(socket=None):
 	os.system("cp " + sysbench_script_15[0] + ' ' + sysbench_script_15[1])
-	
+	pattern = r"SOCKET=\s*" + r'.*'
+	replacement = "SOCKET=\"" + sysbench_socket + "\""
+	replace(sysbench_script_15[1], pattern, replacement)
 	pattern = r"THREADS=\s*" + r'.*'
 	replacement = "THREADS=\"--threads="+str(int(socket) * 24) +"\""
 	replace(sysbench_script_15[1], pattern, replacement)

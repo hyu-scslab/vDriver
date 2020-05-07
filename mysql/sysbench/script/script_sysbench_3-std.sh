@@ -12,7 +12,7 @@ cd $DIR
 
 SYSBENCH="../sysbench/src/sysbench"
 
-SQL="--db_driver=mysql --mysql-host=localhost --mysql-user=root --mysql-socket=/opt/sm1725-1/jaeseon/mysql/mysql-server-8.0/run/mysql.sock --mysql-port=33060 --secondary=off --create_secondary=false"
+SQL="--db_driver=mysql --mysql-host=localhost --mysql-user=root --mysql-port=33060 --secondary=off --create_secondary=false"
 WORKLOAD="oltp_update_non_index_og.lua"
 TIME="--time=100"
 REPORT="--report-interval=2"
@@ -21,7 +21,11 @@ TABLES="--tables=1"
 # record number per one table
 RECORD_NUM="--table_size=100000"
 
-TOTALOPT=$WORKLOAD" "$SQL" "$TIME" "$THREADS" "$TABLES" "$RECORD_NUM" "$REPORT
+PATH="--mysql-socket="
+SOCKET="path_to_socket"
+PATH+=$SOCKET
+
+TOTALOPT=$WORKLOAD" "$SQL" "$PATH" "$TIME" "$THREADS" "$TABLES" "$RECORD_NUM" "$REPORT
 
 if [ "prepare" = "$1" ]; then
 	$SYSBENCH $TOTALOPT $1

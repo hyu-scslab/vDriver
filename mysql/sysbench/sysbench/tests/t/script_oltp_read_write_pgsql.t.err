@@ -1,0 +1,22 @@
+########################################################################
+oltp_read_write.lua + PostgreSQL tests 
+########################################################################
+
+  $ . $SBTEST_INCDIR/pgsql_common.sh
+  $ OLTP_SCRIPT_PATH=${SBTEST_SCRIPTDIR}/oltp_read_write.lua
+# Override --threads to run read/write tests with a single thread for
+# deterministic results
+  $ SB_EXTRA_ARGS="--threads=1"
+  $ . $SBTEST_INCDIR/script_oltp_common.sh
+  sysbench 1.1.0-174f3aa (using bundled LuaJIT 2.1.0-beta3)
+  
+  Creating table 'sbtest1'...
+  FATAL: PQexec() failed: 7 relation "sbtest1" already exists
+  FATAL: failed query was: CREATE TABLE sbtest1(
+    id SERIAL,
+    k INTEGER DEFAULT '0' NOT NULL,
+    c CHAR(120) DEFAULT '' NOT NULL,
+    pad CHAR(60) DEFAULT '' NOT NULL,
+    PRIMARY KEY (id)
+  )  
+  FATAL: `sysbench.cmdline.call_command' function failed: ...-1/LT/sysbench/sysbench/tests/../src/lua/oltp_common.lua:203: SQL error, errno = 0, state = '42P07': relation "sbtest1" already exists (no-eol)
