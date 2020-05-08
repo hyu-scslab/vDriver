@@ -410,6 +410,25 @@ def run_tracer(dirname, filename):
 	proc.start()
 	return proc
 
+def make_llt_file(dirname=None, figure=None):
+	if figure != 11 and figure != 17:
+		print("Error in make_llt_file()")
+		exit(0)
+	filename_vanilla = dirname + "temp.mysql_vanilla_llt.data"
+	filename_vdriver = dirname + "temp.mysql_vdriver_llt.data"
+	
+	data = []
+	data.append("50,250\n")
+	data.append("350,550\n")
+	f = open(filename_vdriver, 'w')
+	f.writelines(data)
+	f.close()
+
+	if figure == 11:
+		f = open(filename_vanilla, 'w')
+		f.writelines(data)
+		f.close()
+	
 def test_run_11(zipf):
 	# Directory name.
 	dirname=os.getcwd()+"/report/11"
@@ -477,6 +496,7 @@ def test_run_11(zipf):
 	# You should collect your data from logfile.err.
 	print("Mysql w vDriver test Done")
 	convert_version_chain(dirname, plot_path_11)
+	make_llt_file(plot_path_11, 11)
 	make_eps(plot_path_11)
 	print("Success to test 11")
 	return
@@ -877,6 +897,7 @@ def test_run_17(zipf):
 	
 	# You should collect your data from logfile.err.
 	convert_version_chain_17(dirname, plot_path_17 + "temp.mysql_vdriver_chain_64K.data")
+	make_llt_file(plot_path_17, 17)
 	make_eps(plot_path_17)
 	print("Success to test 17")
 	return

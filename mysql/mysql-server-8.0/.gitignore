@@ -1,0 +1,33 @@
+# emacs backup files
+*~
+
+# Misc tags/ctags files
+tags
+TAGS
+TAGS_sorted_by_file
+
+# googletest files
+source_downloads
+
+# added so we can build with wolfSSL
+extra/wolfssl-*
+
+# Vim swap files
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+
+# Configuration files for Visual Studio Code
+.vscode/
+
+# Cscope files
+cscope.*
+
+# Errlog files
+logfile.err*
+
+# CMakeFiles
+CMakeCache.txt
+VERSION.dep
