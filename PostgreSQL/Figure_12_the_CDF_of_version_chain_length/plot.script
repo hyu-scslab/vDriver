@@ -1,0 +1,102 @@
+reset
+##########################################################
+# Gnuplot script file for plotting data in file
+##################### terminal settings ##################
+set size 1.0,1.0
+
+set datafile separator ","
+
+##################### plot ###############################
+
+set terminal postscript eps 20 color size 5.0,1.53
+set termoption enhanced
+set encoding utf8
+
+set autoscale xy
+set autoscale y2
+
+
+infile_vanilla_chain_spectrum = 'gnuplot_data/temp.vanilla_chain_spectrum.data'
+infile_vdriver_chain_spectrum = 'gnuplot_data/temp.vdriver_chain_spectrum.data'
+
+outfile = 'Figure_12_the_CDF_of_version_chain_length.eps'
+set output outfile
+
+
+
+
+
+set key reverse Left
+#set key out horiz
+set key right bottom
+set key at graph 1.05, graph 0.04
+set key font ',18'
+
+
+
+set style line 1 linetype 1 linewidth 2 linecolor rgb 'black'
+set style line 2 dashtype 2 linewidth 2 pointtype 1 pointsize 0 linecolor rgb 'black'
+set style line 3 dashtype (1,1) linewidth 6 pointtype 1 pointsize 0 linecolor rgb 'red'
+set style line 4 dashtype 1 linewidth 3 pointtype 1 pointsize 0 linecolor rgb 'blue'
+
+set style line 5 dashtype 3 linewidth 5 pointtype 1 pointsize 0 linecolor rgb 'black'
+set style line 6 dashtype 1 linewidth 4 pointtype 1 pointsize 0 linecolor rgb 'black'
+
+set style arrow 1 heads size screen 0.003,90 linestyle 1
+set style arrow 2 head filled linestyle 1
+
+
+
+
+
+set xlabel 'chain length'
+set xlabel font ',19'
+set xlabel offset 0.0,0.3
+set xtics font ',18' nomirror
+set format x '10^%.0s'
+set xtics 1
+
+
+set yrange [0:100]
+set ylabel 'CDF(%)'
+set ylabel font ',19'
+set ylabel offset 1.6,0.0
+set ytics font ',19' nomirror
+unset format y
+set ytics 25
+
+set grid xtics ytics
+
+set label 1 at graph 0.80, graph 0.90 font ",20"
+set label 4 at 300, graph -0.50 center offset 0,0 font ',25'
+
+#set xrange [0:600]
+
+
+
+
+
+
+#set lmargin at screen 0.05;
+#set rmargin at screen 0.46;
+#set bmargin at screen 0.63;
+#set tmargin at screen 0.88;
+set label 1 ""
+set label 2 ""
+set label 3 ""
+set label 4 ""
+# throughput
+plot \
+		 infile_vanilla_chain_spectrum using 1:($2) with linespoints linestyle 3 title 'PostgreSQL w/o vDriver',\
+		 infile_vdriver_chain_spectrum using 1:($2) with linespoints linestyle 4 title 'PostgreSQL w/ vDriver'
+
+
+
+
+
+
+
+
+
+
+
