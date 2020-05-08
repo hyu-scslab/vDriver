@@ -11,7 +11,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd)"
 cd $DIR
 
 SYSBENCH="../sysbench/src/sysbench"
-SQL="--db_driver=mysql --mysql-host=localhost --mysql-port=33060 --secondary=off --create-secondary=false"
+SQL="--db_driver=mysql --mysql-host=localhost --mysql-user=root --mysql-port=33060 --secondary=off --create-secondary=false"
 WORKLOAD="oltp_update_non_index.lua"
 
 TIME="--time=275"

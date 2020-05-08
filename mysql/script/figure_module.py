@@ -41,7 +41,7 @@ def init_server():
 	print("Begin to initialize server")
 	pre_cmake_compile()
 	pre_compile()
-	ret = os.system("cd " + mysql_path + "; bash init_server.sh")
+	ret = os.system("cd " + mysql_path + "; bash init_server.sh > /dev/null 2>&1")
 	if ret != 0:
 		print("Error in init_server()")
 		exit(0)
