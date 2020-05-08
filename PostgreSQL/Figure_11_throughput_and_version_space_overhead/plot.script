@@ -27,7 +27,7 @@ infile_postgresql_vdriver_chain = 'gnuplot_data/temp.postgresql_vdriver_chain.da
 infile_postgresql_vdriver_llt = 'gnuplot_data/temp.postgresql_vdriver_llt.data'
 
 
-outfile = 'Figure_11_throughput_and_version_space.eps'
+outfile = 'Figure_11_throughput_and_version_space_overhead.eps'
 set output outfile
 
 
