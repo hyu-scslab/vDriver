@@ -37,6 +37,13 @@ vDriver_header = [mysql_path+"storage/innobase/include/vDriver0seg-std.h", mysql
 # my.cnf standard
 my_cnf = [mysql_path+"my.cnf-std", mysql_path+"my.cnf"]
 
+def init_sysbench():
+	print("Begin to initialize sysbench")
+	ret = os.system("cd " + sysbench_path + "../sysbench; make clean; ./autogen.sh; ./configure; make;")
+	if ret != 0:
+		print("Error in init_sysbench()")
+		exit(0)
+	print("Success to initialize sysbench")
 def init_server():
 	print("Begin to initialize server")
 	pre_cmake_compile()
@@ -45,6 +52,8 @@ def init_server():
 	if ret != 0:
 		print("Error in init_server()")
 		exit(0)
+	init_sysbench()
+	
 	print("Success to initialize server")
 
 def create_db():
