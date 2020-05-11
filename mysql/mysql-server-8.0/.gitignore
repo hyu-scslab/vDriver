@@ -31,3 +31,6 @@ logfile.err*
 # CMakeFiles
 CMakeCache.txt
 VERSION.dep
+
+# boost
+boost/

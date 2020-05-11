@@ -241,6 +241,9 @@ def replace(filename, pattern, replacement):
 def pre_cmake_compile():
 	# cmake local
 	ret = os.system("cd " + mysql_path + "; bash cmake_local.sh > /dev/null;")
+	if ret != 0:
+		print("Error in pre_cmake_compile()")
+		exit(0)
 	
 def pre_compile(cond=None, figure=None, size=None):
 	# univ.i
@@ -270,7 +273,7 @@ def pre_compile(cond=None, figure=None, size=None):
 
 	ret = os.system("cd " + mysql_path +"; bash make_local.sh >/dev/null")
 	if ret != 0:
-		print("Error in compiling=" + cond)
+		print("Error in pre_compile()")
 		exit(0)
 
 	# my.cnf

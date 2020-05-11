@@ -20,7 +20,7 @@ cmake  \
 	-DMYSQL_UNIX_ADDR=$MY_DB_PATH/run/mysql.sock \
 	-DMYSQL_DATADIR=$MY_DB_PATH/data \
 	-DDOWNLOAD_BOOST=1 \
-	-DWITH_BOOST=/usr/local/boost_1_69_0/ \
+	-DWITH_BOOST=$MY_DB_PATH/boost \
 	-DFORCE_INSOURCE_BUILD=1 \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DWITH_DEBUG=0 \
