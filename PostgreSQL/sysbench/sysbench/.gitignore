@@ -86,4 +86,3 @@ prime
 stage
 *.snap
 /snap/snapcraft.yaml
-cscope.*

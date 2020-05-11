@@ -466,9 +466,10 @@ function execute_index_updates()
    end
 end
 
+--function execute_non_index_updates()
+--   local tnum = get_table_num()
+-- Dedicate each table for each worker thread
 function execute_non_index_updates(thread_id)
-   --local tnum = get_table_num()
-   -- Dedicate each table for each worker thread
    local tnum = thread_id + 1
 
    for i = 1, sysbench.opt.non_index_updates do
