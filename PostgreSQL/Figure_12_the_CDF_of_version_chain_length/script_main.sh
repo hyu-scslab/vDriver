@@ -37,7 +37,7 @@ RESULT_DIR=$DIR"result/$NOW/"
 mkdir -p $RESULT_DIR
 
 # clear data and eps
-sudo rm -rf $GNUPLOT_DATA
+rm -rf $GNUPLOT_DATA
 rm -f *.eps
 
 mkdir -p $GNUPLOT_DATA
@@ -262,7 +262,7 @@ cp $CONFIG_DIR"postgresql.conf" $0 $RESULT_DIR
 cp $DIR"refine.py" $DIR"plot.script" $RESULT_DIR
 
 # copy data for gnuplot.
-sudo find ${RESULT_DIR} -type f -name "*.data" -exec cp -f {} ${GNUPLOT_DATA} \;
+find ${RESULT_DIR} -type f -name "*.data" -exec cp -f {} ${GNUPLOT_DATA} \;
 
 # refine
 python3 refine.py
