@@ -23,11 +23,11 @@ esac
 done
 
 cd $BASE_DIR
-make clean -j96 --silent
+make clean -j --silent
 
 ./autogen.sh
 ./configure --with-pgsql --silent
-make -j96 --silent
+make -j --silent
 
 cd $DIR
 
