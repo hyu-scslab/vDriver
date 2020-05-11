@@ -12,4 +12,4 @@ rm -f data/undo_002
 rm -f data/ib_logfile0
 rm -f data/ib_logfile1
 
-./run/bin/mysqld --log_error=$DIR/logfile.err --datadir=$DATADIR --user=root
+./run/bin/mysqld --defaults-file=$DIR/my.cnf --log_error=$DIR/logfile.err --datadir=$DATADIR --user=root

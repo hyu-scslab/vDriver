@@ -7,4 +7,4 @@ DATADIR=$DIR/data/
 rm -rf data/
 
 # Initialize server
-./bin/mysqld --initialize-insecure --datadir=$DATADIR
+./bin/mysqld --defaults-file=$DIR/my.cnf --initialize-insecure --datadir=$DATADIR
