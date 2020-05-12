@@ -520,7 +520,7 @@ def figure_11():
 
 def test_run_15():
 	# Directory name.
-	dirname=os.getcwd()+"/report/" + datetime.datetime.now().strftime('%Y.%m.%d__%H-%M') + "_FIG_15"
+	dirname=os.getcwd()+"/report/15"
 	plot_path_15 = plot_path + "15/"
 	os.system("mkdir -p " + dirname)
 	print("Begin to run test 15")
@@ -648,7 +648,7 @@ def convert_raw_data_3(dirname):
 		if sp_line[0] != '[':
 			continue
 		result_tps_line = sp_line[1][0:-1] + " " + sp_line[6] + "\n"
-		trx_id = trx_id + float(sp_line[6])
+		trx_id = trx_id + float(sp_line[6]) * 2
 		result_tid_line = sp_line[1][0:-1] + " " + str(trx_id) + "\n"
 
 		result_tps.append(result_tps_line)
