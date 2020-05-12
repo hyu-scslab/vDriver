@@ -157,7 +157,9 @@ done
 
 
 # run sysbench
-( sudo -u ${USER} $SYSBENCH $SYSBENCH_OPT $SYSBENCH_WORKLOAD run ) > "${RESULT_DIR}sysbench.data"
+cd $SYSBENCH_LUA
+( sudo -u ${USER} $SYSBENCH $SYSBENCH_OPT $SYSBENCH_WORKLOAD "run" ) > "${RESULT_DIR}sysbench.data"
+cd $DIR
 
 wait
 
