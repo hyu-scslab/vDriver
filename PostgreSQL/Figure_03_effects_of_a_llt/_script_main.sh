@@ -55,7 +55,9 @@ sudo -u ${USER} mkdir -p $GNUPLOT_DATA
 
 
 # clear logfile of postgre
+sudo -u ${USER} touch $LOGFILE
 sudo -u ${USER} cat /dev/null > $LOGFILE
+chown ${USER} $LOGFILE
 
 
 
@@ -182,12 +184,12 @@ sudo -u ${USER} cp $DIR"refine.py" $DIR"plot.script" $RESULT_DIR
 
 # copy data for gnuplot.
 find ${RESULT_DIR} -type f -name "*.data" -exec cp -f {} ${GNUPLOT_DATA} \;
-find ${GNUPLOT_DATA} -type f -name "*.data" -exec chown ${USER}:${USER} {} \;
+find ${GNUPLOT_DATA} -type f -name "*.data" -exec chown ${USER} {} \;
 
 # perf data to text file
 for entry in ${GNUPLOT_DATA}perf_*.data
 do
-	(perf report -s sym --children -f -i $entry --stdio > $entry".txt" 2> /dev/null ; chown ${USER}:${USER} $entry".txt") &
+	(perf report -s sym --children -f -i $entry --stdio > $entry".txt" 2> /dev/null ; chown ${USER} $entry".txt") &
 done
 wait
 
