@@ -59,7 +59,7 @@ infile_short_X = 'gnuplot_data/temp.short_X.data'
 infile_long_X = 'gnuplot_data/temp.long_X.data'
 infile_throughput = 'gnuplot_data/temp.tps.data'
 
-outfile = 'Figure_3_effects_of_a_llt_postgresql.eps'
+outfile = 'Figure_03_effects_of_a_llt_postgresql.eps'
 
 set output outfile
 
