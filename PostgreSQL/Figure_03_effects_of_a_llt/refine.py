@@ -85,10 +85,6 @@ long_xid_data.append([long_begin, long_end, long_xid])
 
 
 
-# Make perf data to text.
-os.system("bash perftotext.sh")
-
-
 
 
 # Calculate cpu breakdown...........
