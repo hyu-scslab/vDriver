@@ -1,0 +1,3 @@
+[submodule "PostgreSQL/PostgreSQL/postgres"]
+	path = PostgreSQL/PostgreSQL/postgres
+	url = https://github.com/hyu-scslab/vDriver_PostgreSQL.git
