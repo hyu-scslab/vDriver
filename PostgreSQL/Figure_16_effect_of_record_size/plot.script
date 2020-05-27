@@ -1,0 +1,78 @@
+reset
+##########################################################
+# Gnuplot script file for plotting data in file
+##################### terminal settings ##################
+set size 1.0,1.0
+set datafile separator ","
+##################### plot ###############################
+
+set terminal postscript eps 20 color size 5.0,2.2
+set termoption enhanced
+set encoding utf8
+
+set autoscale xy
+set autoscale y2
+
+infile_vanilla_128 = 'gnuplot_data/temp.tps_VANILLA_128.data'
+infile_vanilla_1024 = 'gnuplot_data/temp.tps_VANILLA_1024.data'
+infile_vanilla_long = 'gnuplot_data/temp.long_VANILLA.data'
+infile_vdriver_128 = 'gnuplot_data/temp.tps_VDRIVER_128.data'
+infile_vdriver_1024 = 'gnuplot_data/temp.tps_VDRIVER_1024.data'
+infile_vdriver_long = 'gnuplot_data/temp.long_VDRIVER.data'
+
+outfile = 'Figure_16_effect_of_record_size.eps'
+set output outfile
+
+set multiplot layout 1,2
+set style data linespoints
+set xrange [-5:110]
+set yrange [0:22]
+
+set style line 1 dashtype 1 pointtype 1 pointsize 0 linewidth 2 linecolor rgb 'blue'
+set style line 2 dashtype 1 pointtype 1 pointsize 0 linewidth 2 linecolor rgb 'red'
+set style line 3 dashtype 1 pointtype 1 pointsize 0 linewidth 2 linecolor rgb 'black'
+set style arrow 1 heads size screen 0.008,90 linestyle 1 linecolor rgb 'black'
+set style arrow 2 head filled linestyle 1 linecolor rgb 'black'
+
+set key font ",18"
+
+set lmargin 6
+set rmargin 0
+set tmargin 3
+set bmargin 4
+set ytics ("0" 0, "5" 5, "10" 10, "15" 15, "20" 20)
+set key right top
+set xlabel "Time (seconds)"
+set ylabel "tps(X10K)"
+set title "PostgreSQL w/o vDriver"
+plot \
+	infile_vanilla_long using 1:($0 + 4):($2-$1):(0) with vectors arrowstyle 1 notitle,\
+    infile_vanilla_long using 1:($0 + 4):($2-$1):(0) with vectors arrowstyle 2 title 'long-lived transaction',\
+	infile_vanilla_128 using 1:($2/10000) with linespoints linestyle 2 title "128 bytes", \
+	infile_vanilla_1024 using 1:($2/10000) with linespoints linestyle 1 title "1024 bytes"
+
+unset lmargin
+unset rmargin
+unset tmargin
+unset bmargin
+
+set lmargin 0
+set rmargin 6
+set tmargin 3
+set bmargin 4
+unset ytics
+set key at screen 0.86,0.74 right
+unset ylabel
+set title "PostgreSQL w/ vDriver"
+plot \
+	infile_vdriver_long using 1:($0 + 4):($2-$1):(0) with vectors arrowstyle 1 notitle,\
+    infile_vdriver_long using 1:($0 + 4):($2-$1):(0) with vectors arrowstyle 2 notitle,\
+	infile_vdriver_128 using 1:($2/10000) with linespoints linestyle 2 notitle, \
+	infile_vdriver_1024 using 1:($2/10000) with linespoints linestyle 1 notitle
+
+unset lmargin
+unset rmargin
+unset tmargin
+unset bmargin
+
+unset multiplot
