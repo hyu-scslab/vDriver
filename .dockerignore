@@ -1,0 +1,7 @@
+*
+
+# Whitelist
+!Makefile
+!PostgreSQL/*
+!mysql/*
+!requirements.txt

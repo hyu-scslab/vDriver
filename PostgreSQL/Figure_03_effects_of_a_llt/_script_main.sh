@@ -4,12 +4,20 @@ PORT=5439
 
 USER=$(who am i | awk '{print $1}')
 echo $USER
+
+if  [ "$USER" == "" ]
+then
+    echo "Please type user name except root."
+	read USER
+fi
+
 if  [ "$USER" == "root" ]
 then
     echo "This script can't be run with root user."
     echo "Please login with normal user."
     exit
 fi
+
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"/
 
