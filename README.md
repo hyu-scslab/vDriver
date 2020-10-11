@@ -22,7 +22,7 @@ bash ./script_main.sh
 # MySQL
 ```
 cd mysql/script
-python3 ./run_11.py
+python3 ./run_init.py ; python3 ./run_11.py
 ```
 
 
